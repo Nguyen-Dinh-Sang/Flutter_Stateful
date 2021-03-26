@@ -6,18 +6,33 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  final wordPair = WordPair.random();
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Welcome',
       home: Scaffold(
-        appBar: AppBar(title: Text('Example'),),
+        appBar: AppBar(
+          title: Text('Example'),
+        ),
         body: Center(
-          child: Text(wordPair.asPascalCase),
+          child: RandomWords(),
         ),
       ),
     );
+  }
+}
+
+class RandomWords extends StatefulWidget {
+  @override
+  RandomWordsState createState() {
+    return new RandomWordsState();
+  }
+}
+
+class RandomWordsState extends State<RandomWords> {
+  @override
+  Widget build(BuildContext context) {
+    final wordPair = WordPair.random();
+    return Text(wordPair.asPascalCase);
   }
 }
