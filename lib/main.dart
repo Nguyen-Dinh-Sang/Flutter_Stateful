@@ -30,7 +30,10 @@ class RandomWords extends StatefulWidget {
 }
 
 class RandomWordsState extends State<RandomWords> {
-  final _word = <WordPair>[];
+  final List<WordPair> _word = <WordPair>[];
+  final _biggerFont = const TextStyle(fontSize: 18.0);
+  // không cho phép giá trị trong set trùng
+  final Set<WordPair> _saved = new Set<WordPair>();
 
   @override
   Widget build(BuildContext context) {
@@ -44,17 +47,36 @@ class RandomWordsState extends State<RandomWords> {
   }
 
   Widget _buildRow(WordPair wordPair, int index) {
+    // set _saved chứa wordpair thì dã save
+    final bool alreadySaved = _saved.contains(wordPair);
+
     return ListTile(
       title: Row(
         children: <Widget>[
-          Text(index.toString() + " ", style: const TextStyle(fontSize: 18.0),),
-          Expanded(child: Text(wordPair.asPascalCase, style: const TextStyle(fontSize: 18.0),)),
+          Text(
+            index.toString() + " ",
+            style: _biggerFont,
+          ),
+          Expanded(
+              child: Text(
+            wordPair.asPascalCase,
+            style: _biggerFont,
+          )),
         ],
       ),
-      // title: Text(
-      //   wordPair.asPascalCase,
-      //   style: const TextStyle(fontSize: 18.0),
-      // ),
+      trailing: new Icon(
+        alreadySaved == true ? Icons.favorite : Icons.favorite_border,
+        color: Colors.red,
+      ),
+      onTap: () {
+        setState(() {
+          if (alreadySaved) {
+            _saved.remove(wordPair);
+          } else {
+            _saved.add(wordPair);
+          }
+        });
+      },
     );
   }
 }
