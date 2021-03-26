@@ -13,6 +13,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Welcome',
       home: Scaffold(
+        appBar: AppBar(title: Text('Example'),),
         body: Center(
           child: Text(wordPair.asPascalCase),
         ),
