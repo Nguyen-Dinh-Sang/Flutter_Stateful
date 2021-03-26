@@ -10,14 +10,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Welcome',
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Example'),
-        ),
-        body: Center(
-          child: RandomWords(),
-        ),
-      ),
+      home: RandomWords(),
     );
   }
 }
@@ -32,18 +25,28 @@ class RandomWords extends StatefulWidget {
 class RandomWordsState extends State<RandomWords> {
   final List<WordPair> _word = <WordPair>[];
   final _biggerFont = const TextStyle(fontSize: 18.0);
+
   // không cho phép giá trị trong set trùng
   final Set<WordPair> _saved = new Set<WordPair>();
 
   @override
   Widget build(BuildContext context) {
-    // final wordPair = WordPair.random();
-    return ListView.builder(itemBuilder: (context, index) {
-      if (index >= _word.length) {
-        _word.addAll(generateWordPairs().take(10));
-      }
-      return _buildRow(_word[index], index);
-    });
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Example'),
+        actions: <Widget>[
+          new IconButton(icon: Icon(Icons.list), onPressed: _pushSaved)
+        ],
+      ),
+      body: Center(
+        child: ListView.builder(itemBuilder: (context, index) {
+          if (index >= _word.length) {
+            _word.addAll(generateWordPairs().take(10));
+          }
+          return _buildRow(_word[index], index);
+        }),
+      ),
+    );
   }
 
   Widget _buildRow(WordPair wordPair, int index) {
@@ -59,9 +62,9 @@ class RandomWordsState extends State<RandomWords> {
           ),
           Expanded(
               child: Text(
-            wordPair.asPascalCase,
-            style: _biggerFont,
-          )),
+                wordPair.asPascalCase,
+                style: _biggerFont,
+              )),
         ],
       ),
       trailing: new Icon(
@@ -78,5 +81,28 @@ class RandomWordsState extends State<RandomWords> {
         });
       },
     );
+  }
+
+  void _pushSaved() {
+    Navigator.of(context)
+        .push(new MaterialPageRoute(builder: (BuildContext context) {
+      final Iterable<ListTile> titles = _saved.map((WordPair pair) {
+        return new ListTile(
+          title: new Text(
+            pair.asPascalCase,
+            style: _biggerFont,
+          ),
+        );
+      });
+      final List<Widget> divided = ListTile.divideTiles(tiles: titles, context: context).toList();
+      return new Scaffold(
+        appBar: new AppBar(
+          title: new Text("Saved list"),
+        ),
+        body: new ListView(
+          children: divided,
+        ),
+      );
+    }));
   }
 }
